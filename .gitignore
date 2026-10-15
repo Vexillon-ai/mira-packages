@@ -1,0 +1,17 @@
+# NEVER commit a signing key. The Vexillon ed25519 secret key stays offline.
+*.ed25519
+*.key
+*.pem
+*.sk
+secret*
+vexillon.*
+!vexillon.*.pub
+
+# Python / CI junk
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# OS junk
+.DS_Store
+Thumbs.db

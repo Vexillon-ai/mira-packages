@@ -1,0 +1,69 @@
+name: verify-packages
+
+# PR gate for package submissions. Two layers:
+#   1. Catalog integrity (no crypto) — always runs, must pass. Validates index.json,
+#      checks every artifact's sha256/size, and blocks clobbering or downgrading an
+#      already-published version.
+#   2. Manifest check via a released MIRA binary — advisory for now. MIRA's own
+#      verify is the authoritative per-artifact trust path; this surfaces obvious
+#      manifest problems early. It only covers skill artifacts today and is marked
+#      continue-on-error until a dedicated `mira package verify` lands — harden it
+#      (drop continue-on-error) once that exists.
+
+on:
+  pull_request:
+    paths:
+      - "packages/**"
+      - "index.json"
+
+permissions:
+  contents: read
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # need origin/main for the monotonicity check
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate catalog + artifact integrity
+        run: python3 .ci/validate_index.py
+
+  manifest:
+    runs-on: ubuntu-latest
+    needs: integrity
+    continue-on-error: true       # advisory until `mira package verify` exists
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download the latest released MIRA binary
+        run: |
+          set -euo pipefail
+          # Release assets are versioned (mira-<ver>-...); resolve the latest tag, then fetch it.
+          tag="$(curl -fsSL https://api.github.com/repos/Vexillon-ai/MIRA/releases/latest | python3 -c 'import json,sys;print(json.load(sys.stdin)["tag_name"])')"
+          ver="${tag#v}"
+          curl -fsSL -o mira.tar.gz "https://github.com/Vexillon-ai/MIRA/releases/download/${tag}/mira-${ver}-x86_64-unknown-linux-gnu.tar.gz"
+          tar -xzf mira.tar.gz
+          chmod +x mira
+          ./mira --version || true
+      - name: Validate submitted skill manifests
+        run: |
+          set -euo pipefail
+          changed="$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- 'packages/**/*.miraskill' || true)"
+          if [ -z "$changed" ]; then
+            echo "No .miraskill artifacts changed; nothing to validate."
+            exit 0
+          fi
+          for pkg in $changed; do
+            echo "::group::$pkg"
+            work="$(mktemp -d)"
+            tar -xzf "$pkg" -C "$work"
+            # `mira skill validate` expects an unpacked skill directory (skill.toml).
+            dir="$(dirname "$(find "$work" -name skill.toml -print -quit)")"
+            ./mira skill validate "$dir"
+            echo "::endgroup::"
+          done
