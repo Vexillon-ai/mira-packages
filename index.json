@@ -1,5 +1,44 @@
 {
   "schema": "1",
-  "generated_at": "2026-10-15T07:39:13Z",
-  "packages": []
+  "generated_at": "2026-10-15T12:39:53Z",
+  "packages": [
+    {
+      "id": "ai.vexillon.nextcloud-mcp",
+      "name": "Nextcloud MCP",
+      "kind": "mcp_server",
+      "latest": "1.0.0",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "min_mira_version": "0.356.0",
+          "download_url": "https://raw.githubusercontent.com/Vexillon-ai/mira-packages/main/packages/ai.vexillon.nextcloud-mcp/1.0.0/ai.vexillon.nextcloud-mcp-1.0.0.mirapkg",
+          "sha256": "fbafe07055615719f52c2e05d43552627eebca1d9783323e08295ed84d7b631f",
+          "size": 6616,
+          "publisher": "Vexillon",
+          "key_fingerprint": "fingerprint:df0745f76797aa5dda701644b429533d79905fe3afe69f70372a4adaabee3673",
+          "summary": "Nextcloud Files + Calendar as agent tools, over MCP (stdio).",
+          "license": "MIT"
+        }
+      ]
+    },
+    {
+      "id": "ai.vexillon.nextcloud-talk",
+      "name": "Nextcloud Talk",
+      "kind": "cpp_provider",
+      "latest": "1.0.0",
+      "versions": [
+        {
+          "version": "1.0.0",
+          "min_mira_version": "0.356.0",
+          "download_url": "https://raw.githubusercontent.com/Vexillon-ai/mira-packages/main/packages/ai.vexillon.nextcloud-talk/1.0.0/ai.vexillon.nextcloud-talk-1.0.0.mirapkg",
+          "sha256": "330a9d6c81c4eb1a68cc91682dd0972d1a7b628eb6a398c31739bdf7f68f2496",
+          "size": 15654,
+          "publisher": "Vexillon",
+          "key_fingerprint": "fingerprint:df0745f76797aa5dda701644b429533d79905fe3afe69f70372a4adaabee3673",
+          "summary": "Bridge Nextcloud Talk to MIRA as a CPP (Channel Provider Protocol) external channel.",
+          "license": "MIT"
+        }
+      ]
+    }
+  ]
 }
