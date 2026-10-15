@@ -10,6 +10,17 @@ where to download the artifact and the hashes/keys needed to trust it.
 Discovery through a source never lowers MIRA's security bar — see
 [Safety model](#safety-model).
 
+## Available packages
+
+| Package | Kind | Latest | Min MIRA | Summary |
+|---|---|---|---|---|
+| `ai.vexillon.nextcloud-mcp` | mcp_server | 1.0.0 | 0.356.0 | Nextcloud Files + Calendar as agent tools, over MCP (stdio). |
+| `ai.vexillon.nextcloud-talk` | cpp_provider | 1.0.0 | 0.356.0 | Bridge Nextcloud Talk to MIRA as a CPP (Channel Provider Protocol) external channel. |
+
+Both are signed by the first-party Vexillon publisher key, so a MIRA instance
+with this source enabled installs them as **Verified**. The authoritative list
+is always [`index.json`](index.json).
+
 ## How a MIRA instance uses this repo
 
 1. The operator adds this source and **pins its public key** in `mira_config.json`:
